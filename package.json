@@ -2,9 +2,8 @@
   "name": "hblog-back",
   "version": "0.1.1",
   "scripts": {
-    "start": "./node_modules/.bin/nodemon src/app.js",
-    "build-dev": "NODE_ENV=production webpack --config ./build/webpack.dev.js",
-    "build-prd": "NODE_ENV=production webpack --config ./build/webpack.prd.js"
+    "start": "npm install && pm2 start ./src/app.js",
+    "debug": "./node_modules/.bin/nodemon ./src/app.js"
   },
   "dependencies": {
     "jsonwebtoken": "^7.4.1",
