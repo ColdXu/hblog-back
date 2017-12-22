@@ -2,8 +2,7 @@
   "name": "hblog-back",
   "version": "0.1.1",
   "scripts": {
-    "start": "npm install && pm2 start ./src/app.js",
-    "debug": "./node_modules/.bin/nodemon ./src/app.js"
+    "start": "./node_modules/.bin/nodemon ./src/app.js"
   },
   "dependencies": {
     "jsonwebtoken": "^7.4.1",
