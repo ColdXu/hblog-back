@@ -1,6 +1,6 @@
 {
   "name": "hblog-back",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "scripts": {
     "start": "./node_modules/.bin/nodemon src/app.js",
     "build-dev": "NODE_ENV=production webpack --config ./build/webpack.dev.js",
