@@ -18,4 +18,4 @@
 ### 遇到的坑  
 [启动service mongod start 报错](https://github.com/jingxinxin/tiankeng/issues/5)
 
- 
+  
