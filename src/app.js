@@ -11,10 +11,12 @@ const error = require('./middleware/error');
 const cors = require('koa2-cors');
 mongoose.Promise = require('bluebird');
 
-const DB_URL = 'mongodb://127.0.0.1:27017/blog';
+const DB_URL = 'mongodb://db:123456@123.206.201.163:27017/blog';
 
 //；连接数据库
-mongoose.connect(DB_URL);
+mongoose.connect(DB_URL, {
+  useMongoClient:true
+});
 
 app.keys = ['davinci'];
 
@@ -22,13 +24,14 @@ app.use(cors());
 
 // session设置
 app.use(session({
-    key: 'koa:sess',
+    key: 'blog',
     maxAge: 86400000,
     overwrite: true,
     httpOnly: true,
     signed: true,
     rolling: false,
 }, app));
+
 
 app.use(bodyparser);
 app.use(json());
@@ -45,6 +48,8 @@ app.use(async (ctx, next) => {
   console.log(`${ctx.method} ${ctx.url} - ${ms}ms`);
 });
 
-app.listen(8000)
+app.listen(8000, () => {
+  console.log('http://127.0.0.1:8000已启动')
+})
 
 module.exports = app;

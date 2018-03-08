@@ -8,6 +8,7 @@ const API = '/api/';
 router.get(API + 'home', authorization, home.test)
     .post(API + 'user/regiser', user.post_regiser)
     .get(API + 'logout', authorization, user.get_logout)
+    .get(API + 'user/info', user.get_info)
     
     .post(API + 'login', user.post_login)
     .post(API + 'admin/article', authorization, article.post_admin_article)

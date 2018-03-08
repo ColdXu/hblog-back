@@ -8,7 +8,11 @@ var User = require('../model/user');
  */
 const post_regiser = async (ctx, next) => {
 
-    const { username, password } = ctx.request.body;
+    const { username, password, nickname, headImg } = ctx.request.body;
+
+    if (!username || !password) {
+        return ctx.throw('user:registered', '用户名或密码不可为空');
+    }
 
     const userData = await User.findOne({ username });
 
@@ -19,6 +23,8 @@ const post_regiser = async (ctx, next) => {
     const user = new User({
         username,
         password,
+        nickname,
+        headImg,
         rule: ['admin'],
         createDate: new Date().getTime()
     });
@@ -38,9 +44,12 @@ const post_regiser = async (ctx, next) => {
  */
 const post_login = async (ctx, next) => {
     const { username, password } = ctx.request.body;
-    console.log(username)
+
+    if (!username || !password) {
+        return ctx.throw('user:registered', '用户名或密码不可为空');
+    }
+
     const user = await User.findOne({ username });
-    console.log('user', user);
     
     if (!user) {
         return ctx.throw('user:not_registered', '用户名不存在');
@@ -50,9 +59,10 @@ const post_login = async (ctx, next) => {
         return ctx.throw('user:password_error', '密码错误');
     }
 
-    console.log('nihao')
     ctx.session.user = user;
-    ctx.rest();
+
+    ctx.rest(user);
+    
 };
 
 /**
@@ -66,8 +76,33 @@ const get_logout = async (ctx, next) => {
     ctx.rest();
 }
 
+/**
+ * 获取用户信息
+ * 
+ * @param {any} ctx 
+ * @param {any} next 
+ */
+const get_info = async (ctx, next) => {
+    const sessionUser = ctx.session.user;
+
+    console.log('sessionUser', ctx.session)
+    if (!sessionUser) {
+        return ctx.throw('user:not_authorization', '用户未登录');
+    }
+    const user = await User.findOne({ username: sessionUser.username });
+
+    if (!user) {
+        return ctx.throw('user:not_user', '数据获取失败');
+    }
+    
+    ctx.rest(user);
+    
+};
+
+
 module.exports = {
     post_regiser,
     post_login,
-    get_logout
+    get_logout,
+    get_info
 };

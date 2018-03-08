@@ -15,6 +15,17 @@
 |`delete`   |/api/admin/article/{id}| 删除文章|
 |`put`      |/api/admin/article/{id}| 文章| 
 
+#### 创建用户
+db.createUser({user: "root", pwd: "123456", roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]})
+
+#### 启动mongo
+mongod -f /ect/mongo.conf
+
+#### 修复mongod非正常关毕报错
+mongod --db
+
+#### 查看mogno进程
+-ef | grep mongo
 ### 遇到的坑  
 [启动service mongod start 报错](https://github.com/jingxinxin/tiankeng/issues/5)
 
