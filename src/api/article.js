@@ -7,21 +7,32 @@ var Article = require('../model/article');
  * @param {any} next 
  */
 const post_admin_article = async (ctx, next) => {
-    const { title, describe } = ctx.request.body;
-    const createDate = new Date().getTime();
+    const { title, content } = ctx.request.body;
+
+    if (!title) {
+        ctx.throw('article:title_empty', '博文标题不可为空')
+    }
+
+    if (!content) {
+        ctx.throw('article:content_empty', '博文内容不可为空')
+    }
+
+    const createDate = Number.parseInt(new Date().getTime(), 10);
 
     const article = new Article({
         title,
-        describe,
+        content,
         createDate,
-        modifyDate: createDate,
+        modifyDate: Number.parseInt(createDate),
         tags: [],
         status: 'edit',
         pv: 0
     });
 
     await article.save().then(data => {
-        ctx.rest();
+        ctx.rest({
+            id: data._id
+        });
     }).catch(err => {
         ctx.throw('user:register_error', '添加文章失败')
     });
@@ -35,7 +46,13 @@ const post_admin_article = async (ctx, next) => {
  */
 const get_admin_article_list = async (ctx, next) => {
     const list = await Article.find({});
-    ctx.rest(list);
+    
+    ctx.rest({
+        limit: 0,
+        current: 0,
+        total: list.length,
+        list
+    });
 };
 
 
@@ -47,14 +64,14 @@ const get_admin_article_list = async (ctx, next) => {
  */
 const get_admin_article = async (ctx, next) => {
     const { id } = ctx.params;
-    const article = await Article.findOne({ _id: id });
+    let article = null;
 
-    if (article) {
+    try {
+        article = await Article.findOne({ _id: id });
         ctx.rest(article);
-    } else {
-        ctx.throw('article:article_not_found', '文章已删除')
+    } catch(e) {
+        ctx.throw('article:update_article_not_found', '修改文章不存在')
     }
-    
 };
 
 /**
@@ -64,25 +81,27 @@ const get_admin_article = async (ctx, next) => {
  * @param {any} next 
  */
 const put_admin_article = async (ctx, next) => {
-    const { title, describe } = ctx.request.body;
+    const { title, content } = ctx.request.body;
     const { id } = ctx.params;
+    let article = null;
 
-    const article = await Article.findOne({ _id: id });
-
-    if (!article) {
-        ctx.throw('article:update_article_not_found', '修改失败，文章可能被删除')
+    try {
+        article = await Article.findOne({ _id: id });
+    } catch(e) {
+        ctx.throw('article:update_article_not_found', '修改文章不存在')
     }
 
-    await Article.update({ _id: id }, {
-        $set: {
-            title,
-            describe
-        },
-    }).then(data => {
+    try {
+        await Article.update({ _id: id }, {
+            $set: {
+                title,
+                content
+            },
+        });
         ctx.rest();
-    }).catch(err => {
+    } catch(e) {
         ctx.throw('article:update_article_error', '修改失败')
-    });
+    }
 };
 
 /**
@@ -98,8 +117,18 @@ const delete_admin_article = async (ctx, next) => {
     }).catch(err => {
         ctx.throw('article:delete_article_error', '删除文章失败')
     });
-    
 };
+
+
+/**
+ * 更改文章状态
+ * 
+ * @param {any} ctx 
+ * @param {any} next 
+ */
+const put_admin_article_status = async (ctx, next) => {
+
+}
 
 module.exports = {
     post_admin_article,

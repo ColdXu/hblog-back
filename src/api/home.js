@@ -1,6 +1,5 @@
 class Home {
     async test(ctx, next) {
-        console.log('nihao')
         // ctx.throw(400, 'fdsafds')
         // console.log(this.throw)
         // this.throw(400, new Error('nihao'))

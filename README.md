@@ -15,8 +15,17 @@
 |`delete`   |/api/admin/article/{id}| 删除文章|
 |`put`      |/api/admin/article/{id}| 文章| 
 
+#### 使用ssh行程登录服务器
+ssh-copy-id aliyunzixun@xxx.com
+
 #### 创建用户
+use admin
 db.createUser({user: "root", pwd: "123456", roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]})
+
+db.auth('root', '123456')
+use blog
+ db.createUser({user: "db", pwd: "123456", roles: [ { role: "userAdminAnyDatabase", db: "blog" } ]})
+
 
 #### 启动mongo
 mongod -f /ect/mongo.conf
@@ -29,4 +38,12 @@ mongod --db
 ### 遇到的坑  
 [启动service mongod start 报错](https://github.com/jingxinxin/tiankeng/issues/5)
 
+
+### linux 根据名称查看进行
+pgrep nginx | xargs ps -u --pid
   
+#### 服务器
+- nvm
+curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash    
+- yarm
+- pm2

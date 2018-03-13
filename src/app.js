@@ -11,8 +11,8 @@ const error = require('./middleware/error');
 const cors = require('koa2-cors');
 mongoose.Promise = require('bluebird');
 
-const DB_URL = 'mongodb://db:123456@123.206.201.163:27017/blog';
-
+const DB_URL = 'mongodb://admin:123456@182.254.231.120:27017/hblog';
+// const DB_URL = 'mongodb://127.0.0.1:27017/blog';
 //；连接数据库
 mongoose.connect(DB_URL, {
   useMongoClient:true
@@ -20,7 +20,9 @@ mongoose.connect(DB_URL, {
 
 app.keys = ['davinci'];
 
-app.use(cors());
+app.use(cors({
+  credentials: true,
+}));
 
 // session设置
 app.use(session({

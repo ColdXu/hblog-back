@@ -8,7 +8,8 @@ var User = require('../model/user');
  */
 const post_regiser = async (ctx, next) => {
 
-    const { username, password, nickname, headImg } = ctx.request.body;
+    const { username, password, nickname, headImg = '' } = ctx.request.body;
+    console.log(username, password, nickname)
 
     if (!username || !password) {
         return ctx.throw('user:registered', '用户名或密码不可为空');
@@ -32,6 +33,7 @@ const post_regiser = async (ctx, next) => {
     await user.save().then(data => {
         ctx.rest();
     }).catch(err => {
+        console.log(err)
         ctx.throw('user:register_error', '注册失败')
     });
 };
