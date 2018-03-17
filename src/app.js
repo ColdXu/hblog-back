@@ -20,7 +20,11 @@ mongoose.connect(DB_URL, {
 
 app.keys = ['davinci'];
 
-app.use(cors());
+app.use(cors({
+  origin: function (ctx) {
+    return '*'
+  }
+}));
 
 // session设置
 app.use(session({
