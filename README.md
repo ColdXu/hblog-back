@@ -43,7 +43,7 @@ mongod --db
 pgrep nginx | xargs ps -u --pid 
     
 #### 服务器
-- nvm
+- nvm  
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash    
 - yarm
 - pm2
