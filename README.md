@@ -41,7 +41,7 @@ mongod --db
 
 ### linux 根据名称查看进行
 pgrep nginx | xargs ps -u --pid 
-  
+    
 #### 服务器
 - nvm
 curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.8/install.sh | bash    
