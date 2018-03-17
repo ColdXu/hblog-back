@@ -40,7 +40,7 @@ mongod --db
 
 
 ### linux 根据名称查看进行
-pgrep nginx | xargs ps -u --pid
+pgrep nginx | xargs ps -u --pid 
   
 #### 服务器
 - nvm
