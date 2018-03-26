@@ -9,7 +9,7 @@ module.exports = async (ctx, next) => {
     try {
         await next();
     } catch (e) {
-
+        console.log(e)
         let status = e.status || 500;
         let message = e.message || '服务器错误';
 

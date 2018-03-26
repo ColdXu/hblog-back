@@ -9,7 +9,6 @@ var User = require('../model/user');
 const post_regiser = async (ctx, next) => {
 
     const { username, password, nickname, headImg = '' } = ctx.request.body;
-    console.log(username, password, nickname)
 
     if (!username || !password) {
         return ctx.throw('user:registered', '用户名或密码不可为空');
@@ -87,7 +86,6 @@ const get_logout = async (ctx, next) => {
 const get_info = async (ctx, next) => {
     const sessionUser = ctx.session.user;
 
-    console.log('sessionUser', ctx.session)
     if (!sessionUser) {
         return ctx.throw('user:not_authorization', '用户未登录');
     }
@@ -101,10 +99,26 @@ const get_info = async (ctx, next) => {
     
 };
 
+/**
+ * 获取站点用户信息
+ * 
+ * @param {any} ctx 
+ * @param {any} next 
+ */
+const get_site_info = async (ctx, next) => {
+    const { username } = ctx.params;
+    const user = await User.findOne({ username });
+    if (!user) {
+        return ctx.throw('user:not_user', '数据获取失败');
+    }
+    ctx.rest(user);
+};
+
 
 module.exports = {
     post_regiser,
     post_login,
     get_logout,
-    get_info
+    get_info,
+    get_site_info,
 };
