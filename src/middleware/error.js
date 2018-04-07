@@ -2,7 +2,10 @@ const RestError = require('../public/util/error');
 
 // 通用错误处理
 module.exports = async (ctx, next) => {
-    ctx.throw = function (status, message) {
+    ctx.throw = function (status, message, err) {
+        if (err) {
+            console.error(err)
+        }
         throw new RestError(status, message);
     }
     

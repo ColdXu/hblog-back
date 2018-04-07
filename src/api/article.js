@@ -1,4 +1,5 @@
 var Article = require('../model/article');
+var Tags = require('../model/tags');
 var { articleStatus } = require('../public/config');
 const statusArr = [articleStatus.EDIT, articleStatus.PUBLISH];
 
@@ -10,7 +11,7 @@ const statusArr = [articleStatus.EDIT, articleStatus.PUBLISH];
  * @param {any} next 
  */
 const get_article_list = async (ctx, next) => {
-    const list = await Article.find({status: 'publish'});
+    const list = await Article.find({status: 'publish'}).sort({publishDate: 1});;
     ctx.rest({
         limit: 0,
         current: 0,
@@ -27,7 +28,8 @@ const get_article_list = async (ctx, next) => {
  * @param {any} next 
  */
 const post_admin_article = async (ctx, next) => {
-    const { title, content, status } = ctx.request.body;
+    const { title, content, status, coverId, tagId } = ctx.request.body;
+    let tagName = '';
 
     if (!title) {
         ctx.throw('article:title_empty', '博文标题不可为空')
@@ -39,10 +41,20 @@ const post_admin_article = async (ctx, next) => {
 
     const createDate = Number.parseInt(new Date().getTime(), 10);
 
+    try {
+        let tagItem = await Tags.findOne({_id: tagId});
+        tagName = tagItem.name;
+    } catch(e) {
+        ctx.throw('user:register_error', '添加文章失败', e)
+    }
+
     const data = {
         title,
         content,
         createDate,
+        coverId,
+        tagId,
+        tagName,
         modifyDate: createDate,
         tags: [],
         status: articleStatus.EDIT,
@@ -55,13 +67,20 @@ const post_admin_article = async (ctx, next) => {
 
     const article = new Article(data);
 
-    await article.save().then(data => {
+    try {
+        const tagData = await Tags.update({_id: tagId}, {
+            $inc: {
+                count: 1
+            }
+        });
+
+        const data = await article.save();
         ctx.rest({
             id: data._id
         });
-    }).catch(err => {
-        ctx.throw('user:register_error', '添加文章失败')
-    });
+    }catch(e) {
+        ctx.throw('user:register_error', '添加文章失败', e)
+    };
 };
 
 /**
@@ -71,8 +90,7 @@ const post_admin_article = async (ctx, next) => {
  * @param {any} next 
  */
 const get_admin_article_list = async (ctx, next) => {
-    const list = await Article.find({});
-    
+    const list = await Article.find().sort({publishDate: 1});
     ctx.rest({
         limit: 0,
         current: 0,
@@ -83,7 +101,7 @@ const get_admin_article_list = async (ctx, next) => {
 
 
 /**
- * 获取文章
+ * 获取管理员文章
  * 
  * @param {any} ctx 
  * @param {any} next 
@@ -126,19 +144,22 @@ const get_article = async (ctx, next) => {
 };
 
 /**
- * 修改文章
+ * 修改管理员文章
  * 
  * @param {any} ctx 
  * @param {any} next 
  */
 const put_admin_article = async (ctx, next) => {
-    const { title, content, status } = ctx.request.body;
+    const { title, content, status, coverId, tagId } = ctx.request.body;
     const { id } = ctx.params;
     let article = null;
     let date = Number.parseInt(new Date().getTime(), 10);
+    let tagName = '';
     let updateData = {
         title,
+        tagId,
         content,
+        coverId,
         modifyDate: date,
     }
 
@@ -146,6 +167,15 @@ const put_admin_article = async (ctx, next) => {
         article = await Article.findOne({ _id: id });
     } catch(e) {
         ctx.throw('article:update_article_not_found', '修改文章不存在')
+    }
+
+    try {
+        let tagItem = await Tags.findOne({_id: tagId});
+        
+        tagName = tagItem.name;
+        updateData.tagName = tagName;
+    } catch(e) {
+        ctx.throw('article:update_article_not_found', '修改文章失败', e)
     }
 
     if (status) {
@@ -165,6 +195,11 @@ const put_admin_article = async (ctx, next) => {
     try {
         await Article.update({ _id: id }, {
             $set: updateData,
+        });
+        await Tags.update({_id: tagId}, {
+            $inc: {
+                count: 1
+            }
         });
         ctx.rest();
     } catch(e) {

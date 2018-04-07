@@ -1,3 +1,4 @@
+var Tags = require('../model/tags');
 var User = require('../model/user');
 
 /**
@@ -89,14 +90,17 @@ const get_info = async (ctx, next) => {
     if (!sessionUser) {
         return ctx.throw('user:not_authorization', '用户未登录');
     }
+
     const user = await User.findOne({ username: sessionUser.username });
+    const tags = await Tags.find({});
 
     if (!user) {
         return ctx.throw('user:not_user', '数据获取失败');
     }
-    
-    ctx.rest(user);
-    
+    ctx.rest({
+        ...user._doc,
+        tags: tags
+    });
 };
 
 /**

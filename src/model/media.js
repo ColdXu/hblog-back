@@ -2,10 +2,12 @@ var mongoose = require('../public/util/mongoose')
 
 var dataSchema = mongoose.Schema({
     filename: String,
-    base64: String,
-    file: Number,
+    path: String,
+    createDate: Number,
+    mediaType: String,
+    type: String,
 });
 
-module.exports = mongoose.model('article', dataSchema);
+module.exports = mongoose.model('media', dataSchema);
 
 

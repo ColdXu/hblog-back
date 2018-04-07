@@ -2,11 +2,12 @@ const Koa = require('koa');
 const app = new Koa();
 const json = require('koa-json');
 const mongoose = require('mongoose');
-const bodyparser = require('koa-bodyparser')();
+const bodyparser = require('koa-body');
 const session = require('koa-session');
 const logger = require('koa-logger');
 const router = require('./router');
 const rest = require('./middleware/rest');
+const mediaRest = require('./middleware/media-rest');
 const error = require('./middleware/error');
 const cors = require('koa2-cors');
 mongoose.Promise = require('bluebird');
@@ -35,9 +36,17 @@ app.use(session({
 }, app));
 
 
-app.use(bodyparser);
+app.use(bodyparser(
+  {
+    multipart: true,
+    formidable: {
+      maxFileSize: 200*1024*1024 // 设置上传文件大小最大限制，默认2M
+    }
+  }
+));
 app.use(json());
 app.use(rest);
+app.use(mediaRest);
 app.use(error);
 app.use(logger());
 app.use(require('koa-static')(__dirname + '/public'));
