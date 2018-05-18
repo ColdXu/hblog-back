@@ -12,7 +12,7 @@ const error = require('./middleware/error');
 const cors = require('koa2-cors');
 mongoose.Promise = require('bluebird');
 
-const DB_URL = 'mongodb://admin:123456@182.254.231.120:27017/hblog';
+const DB_URL = 'mongodb://admin:123456@db.coldxu.com/hblog';
 // const DB_URL = 'mongodb://127.0.0.1:27017/blog';
 //；连接数据库
 mongoose.connect(DB_URL, {

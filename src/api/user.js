@@ -52,6 +52,7 @@ const post_login = async (ctx, next) => {
     }
 
     const user = await User.findOne({ username });
+    const tags = await Tags.find({});
     
     if (!user) {
         return ctx.throw('user:not_registered', '用户名不存在');
@@ -63,7 +64,10 @@ const post_login = async (ctx, next) => {
 
     ctx.session.user = user;
 
-    ctx.rest(user);
+    ctx.rest({
+        ...user._doc,
+        tags: tags
+    });
     
 };
 
