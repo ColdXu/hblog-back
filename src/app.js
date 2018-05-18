@@ -13,7 +13,6 @@ const cors = require('koa2-cors');
 mongoose.Promise = require('bluebird');
 
 const DB_URL = 'mongodb://admin:123456@db.coldxu.com/hblog';
-// const DB_URL = 'mongodb://127.0.0.1:27017/blog';
 //；连接数据库
 mongoose.connect(DB_URL, {
   useMongoClient:true
@@ -60,7 +59,7 @@ app.use(async (ctx, next) => {
 });
 
 app.listen(8000, () => {
-  console.log('http://127.0.0.1:8000已启动')
+  console.log('服务已启用 8000已启动')
 })
 
 module.exports = app;
