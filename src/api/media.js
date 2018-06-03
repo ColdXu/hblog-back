@@ -12,7 +12,6 @@ const post_media = async (ctx, next) => {
     const { files, type } = ctx.request.body;
     const file = files.file;
 
-    console.log('file', file);
     const newPath = '/data/media/' + new Date().getTime() + '.' + file.type.split('/')[1];
 
     fs.rename(file.path, newPath);
