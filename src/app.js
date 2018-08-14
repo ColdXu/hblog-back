@@ -27,7 +27,7 @@ app.use(cors({
 // session设置
 app.use(session({
     key: 'blog',
-    maxAge: 86400000,
+    maxAge: 86400000 * 365,
     overwrite: true,
     httpOnly: true,
     signed: true,
